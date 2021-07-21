@@ -82,7 +82,7 @@ async function fastify_recaptcha(fastify: FastifyInstance, options: Options) {
                     }
                 }
             } catch (err) {
-                throw new Error("verification error")
+                throw new Error("Recaptcha verification error")
             }
 
         }
