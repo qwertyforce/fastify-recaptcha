@@ -37,6 +37,7 @@ function httpsRequest(params, postData) {
 async function fastify_recaptcha(fastify, options) {
     fastify.decorateRequest('recaptcha', undefined);
     if (typeof options.recaptcha_secret_key !== "string") {
+        console.error("recaptcha_secret_key is not found");
         throw new Error("recaptcha_secret_key is not found");
     }
     fastify.addHook('preHandler', async (request, reply) => {
@@ -67,7 +68,7 @@ async function fastify_recaptcha(fastify, options) {
                 }
             }
             catch (err) {
-                throw new Error("verification error");
+                throw new Error("Recaptcha verification error");
             }
         }
     });

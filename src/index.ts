@@ -54,6 +54,7 @@ function httpsRequest(params: https.RequestOptions, postData?: any) {  //https:/
 async function fastify_recaptcha(fastify: FastifyInstance, options: Options) {
     fastify.decorateRequest('recaptcha', undefined)
     if (typeof options.recaptcha_secret_key !== "string") {
+        console.error("recaptcha_secret_key is not found")
         throw new Error("recaptcha_secret_key is not found")
     }
     fastify.addHook('preHandler', async (request, reply) => {
