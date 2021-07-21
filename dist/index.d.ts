@@ -1,8 +1,8 @@
 /// <reference types="node" />
 interface Options {
     recaptcha_secret_key: string;
-    reply: boolean | undefined;
-    hostname: string | undefined;
+    reply?: boolean;
+    hostname?: string;
 }
 interface RecaptchaData {
     success: boolean;
