@@ -4,8 +4,8 @@ import { FastifyInstance } from "fastify"
 
 interface Options {
     recaptcha_secret_key: string,
-    reply: boolean | undefined,
-    hostname: string | undefined
+    reply?: boolean,
+    hostname?: string
 }
 
 interface RecaptchaData {
