@@ -29,17 +29,16 @@ function httpsRequest(params: https.RequestOptions, postData?: any) {  //https:/
             if (res.statusCode && (res.statusCode < 200 || res.statusCode >= 300)) {
                 return reject(new Error('recaptcha statusCode = ' + res.statusCode))
             }
-            let body: Uint8Array[] = []
+            const body: Uint8Array[] = []
             res.on('data', function (chunk) {
                 body.push(chunk)
             })
             res.on('end', function () {
                 try {
-                    body = JSON.parse(Buffer.concat(body).toString())
+                    resolve(JSON.parse(Buffer.concat(body).toString()))
                 } catch (e) {
                     reject(e)
                 }
-                resolve(body)
             })
         })
         req.on('error', function (err) {
@@ -53,7 +52,7 @@ function httpsRequest(params: https.RequestOptions, postData?: any) {  //https:/
 }
 
 async function fastify_recaptcha(fastify: FastifyInstance, options: Options) {
-    fastify.decorateRequest('recaptcha', undefined)
+    fastify.decorateRequest('recaptcha', null)
     if (typeof options.recaptcha_secret_key !== "string") {
         console.error("recaptcha_secret_key is not found")
         throw new Error("recaptcha_secret_key is not found")
