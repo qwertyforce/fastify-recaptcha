@@ -6,10 +6,11 @@ interface Options {
 }
 interface RecaptchaData {
     success: boolean;
-    challenge_ts: string;
-    hostname: string;
-    score: number;
-    action: string;
+    challenge_ts?: string;
+    hostname?: string;
+    score?: number;
+    action?: string;
+    "error-codes"?: string[];
 }
 declare module 'fastify' {
     interface FastifyRequest {

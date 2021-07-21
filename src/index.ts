@@ -10,10 +10,11 @@ interface Options {
 
 interface RecaptchaData {
     success: boolean,
-    challenge_ts: string,
-    hostname: string,
-    score: number,
-    action: string
+    challenge_ts?: string,
+    hostname?: string,
+    score?: number,
+    action?: string,
+    "error-codes"?: string[]
 }
 
 declare module 'fastify' {
@@ -26,29 +27,29 @@ function httpsRequest(params: https.RequestOptions, postData?: any) {  //https:/
     return new Promise(function (resolve, reject) {
         const req = https.request(params, function (res) {
             if (res.statusCode && (res.statusCode < 200 || res.statusCode >= 300)) {
-                return reject(new Error('recaptcha statusCode = ' + res.statusCode));
+                return reject(new Error('recaptcha statusCode = ' + res.statusCode))
             }
-            let body: Uint8Array[] = [];
+            let body: Uint8Array[] = []
             res.on('data', function (chunk) {
-                body.push(chunk);
-            });
+                body.push(chunk)
+            })
             res.on('end', function () {
                 try {
-                    body = JSON.parse(Buffer.concat(body).toString());
+                    body = JSON.parse(Buffer.concat(body).toString())
                 } catch (e) {
-                    reject(e);
+                    reject(e)
                 }
-                resolve(body);
-            });
-        });
+                resolve(body)
+            })
+        })
         req.on('error', function (err) {
-            reject(err);
-        });
+            reject(err)
+        })
         if (postData) {
-            req.write(postData);
+            req.write(postData)
         }
-        req.end();
-    });
+        req.end()
+    })
 }
 
 async function fastify_recaptcha(fastify: FastifyInstance, options: Options) {
@@ -65,27 +66,20 @@ async function fastify_recaptcha(fastify: FastifyInstance, options: Options) {
                 method: 'POST',
                 path: '/recaptcha/api/siteverify',
                 headers: { "Content-Type": "application/x-www-form-urlencoded" }
-            };
+            }
             const postData = `secret=${options.recaptcha_secret_key}&response=${(request as any).body["g-recaptcha-response"]}&remoteip=${request.ip}`
             try {
                 const x: any = await httpsRequest(params, postData)
                 if (options.reply) {
                     if (x.success === false || x.score < 0.5 || (options.hostname && options.hostname !== x.hostname)) {
-                        return reply.send({ message: "Recaptcha verification failed" })
+                        reply.status(403).send({ message: "Recaptcha verification failed" })
                     }
                 } else {
-                    request.recaptcha = {
-                        success: x.success,
-                        challenge_ts: x.challenge_ts,
-                        hostname: x.hostname,
-                        score: x.score,
-                        action: x.action
-                    }
+                    request.recaptcha = x
                 }
             } catch (err) {
-                throw new Error("Recaptcha verification error")
+                reply.status(403).send({ message: "Recaptcha verification error" })
             }
-
         }
     })
 }

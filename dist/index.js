@@ -54,21 +54,15 @@ async function fastify_recaptcha(fastify, options) {
                 const x = await httpsRequest(params, postData);
                 if (options.reply) {
                     if (x.success === false || x.score < 0.5 || (options.hostname && options.hostname !== x.hostname)) {
-                        return reply.send({ message: "Recaptcha verification failed" });
+                        reply.status(403).send({ message: "Recaptcha verification failed" });
                     }
                 }
                 else {
-                    request.recaptcha = {
-                        success: x.success,
-                        challenge_ts: x.challenge_ts,
-                        hostname: x.hostname,
-                        score: x.score,
-                        action: x.action
-                    };
+                    request.recaptcha = x;
                 }
             }
             catch (err) {
-                throw new Error("Recaptcha verification error");
+                reply.status(403).send({ message: "Recaptcha verification error" });
             }
         }
     });
