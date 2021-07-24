@@ -8,7 +8,7 @@ Verification is failed if: score < 0.5 || success === false || options.hostaname
 */
 interface Options {
     recaptcha_secret_key: string,
-    reply?: boolean, // if true, will reply with 403 and error message on recaptca verification error. If false/undefined, will decorate request with recaptcha field. This field contains all the information received from the google request
+    reply?: boolean, // if true, will reply with 403 and error message on recaptcha verification error. If false/undefined, will decorate request with recaptcha field. This field contains all the information received from the google request
     hostname?: string // if exists, a hostname check will be performed
 }
 ```
