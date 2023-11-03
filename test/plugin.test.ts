@@ -1,13 +1,13 @@
 import request from "supertest";
 import fastify from 'fastify'
-import formBodyPlugin from 'fastify-formbody'
+import formBodyPlugin from '@fastify/formbody'
 import fastifyRecaptcha from "./../dist/index"
 describe('plugin test', () => {
     test('throw error if recaptcha sercret key is not provided', () => {
         try {
             const server = fastify()
             server.register(fastifyRecaptcha)
-        } catch (err) {
+        } catch (err: any) {
             expect(err.message).toBe("recaptcha_secret_key is not found");
         }
     })

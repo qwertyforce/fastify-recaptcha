@@ -1,4 +1,4 @@
-/// <reference types="node" />
+import { FastifyInstance } from "fastify";
 interface Options {
     recaptcha_secret_key: string;
     reply?: boolean;
@@ -17,5 +17,6 @@ declare module 'fastify' {
         recaptcha: RecaptchaData | undefined;
     }
 }
-declare const _default: import("fastify").FastifyPluginAsync<Options, import("http").Server>;
+declare function fastify_recaptcha(fastify: FastifyInstance, options: Options): Promise<void>;
+declare const _default: typeof fastify_recaptcha;
 export default _default;
