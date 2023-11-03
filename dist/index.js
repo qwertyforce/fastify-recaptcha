@@ -66,4 +66,4 @@ async function fastify_recaptcha(fastify, options) {
         }
     });
 }
-exports.default = fastify_plugin_1.default(fastify_recaptcha, { name: "fastify-recaptcha" });
+exports.default = (0, fastify_plugin_1.default)(fastify_recaptcha, { name: "fastify-recaptcha" });

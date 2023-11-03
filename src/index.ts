@@ -1,6 +1,7 @@
 import https from 'https'
 import fp from "fastify-plugin"
-import { FastifyInstance } from "fastify"
+import type { FastifyInstance } from "fastify"
+import type { GetterSetter } from 'fastify/types/instance'
 
 interface Options {
     recaptcha_secret_key: string,
@@ -52,7 +53,13 @@ function httpsRequest(params: https.RequestOptions, postData?: any) {  //https:/
 }
 
 async function fastify_recaptcha(fastify: FastifyInstance, options: Options) {
-    fastify.decorateRequest('recaptcha', null)
+    const $rec = {
+        recaptcha: null
+    }
+    fastify.decorateRequest('recaptcha', {
+        getter: () => $rec.recaptcha,
+    } as GetterSetter<FastifyInstance, any>)
+    
     if (typeof options.recaptcha_secret_key !== "string") {
         console.error("recaptcha_secret_key is not found")
         throw new Error("recaptcha_secret_key is not found")
@@ -74,7 +81,7 @@ async function fastify_recaptcha(fastify: FastifyInstance, options: Options) {
                         reply.status(403).send({ message: "Recaptcha verification failed" })
                     }
                 } else {
-                    request.recaptcha = x
+                    $rec.recaptcha = x
                 }
             } catch (err) {
                 reply.status(403).send({ message: "Recaptcha verification error" })
